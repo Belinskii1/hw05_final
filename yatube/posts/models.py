@@ -59,10 +59,10 @@ class Comment(models.Model):
     created = models.DateTimeField('Дата комментария',
                                    auto_now_add=True,
                                    )
- 
+
     class Meta:
         ordering = ('created',)
- 
+
     def __str__(self):
         return 'Комментарий {} на {}'.format(self.author, self.post)
 
@@ -80,4 +80,3 @@ class Follow(models.Model):
         null=True,
         blank=True,
     )
-

@@ -10,6 +10,7 @@ class PostForm(forms.ModelForm):
         labels = {'text': 'Текст поста', 'group': 'Группа'}
         help_texts = {'text': 'Текст поста', 'group': 'Группа'}
 
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
@@ -19,4 +20,4 @@ class CommentForm(forms.ModelForm):
         }
         help_texts = {
             'text': 'Текст нового комментария',
-        } 
+        }

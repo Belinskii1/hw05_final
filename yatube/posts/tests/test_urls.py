@@ -89,11 +89,14 @@ class PostURLTests(TestCase):
     def test_auth_user_can_comment_post(self):
         """проверяем доступы к комментированию
         зарегистрированного пользователя автора поста"""
-        self.authorized_client.post(reverse('posts:add_comment',
-                                     kwargs={'post_id': self.post.id}),
-                              {'text': self.post.text})
-        response_get_post_with_comment = self.authorized_client.get(
+        self.authorized_client.post(reverse(
+            'posts:add_comment',
+            kwargs={'post_id': self.post.id}),
+            {'text': self.post.text}
+        )
+        response = self.authorized_client.get(
             reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
-        self.assertTemplateUsed(response_get_post_with_comment, 'posts/post_detail.html')
-
-        
+        self.assertTemplateUsed(
+            response,
+            'posts/post_detail.html'
+        )
