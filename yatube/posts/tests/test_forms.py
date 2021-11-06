@@ -4,9 +4,8 @@ import tempfile
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
-from django.test import Client, TestCase
-from django.test import override_settings
 
 from ..models import Group, Post
 
