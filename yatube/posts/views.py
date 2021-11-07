@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import F
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.cache import cache_page
 
 from .forms import CommentForm, PostForm
-from .models import Comment, Follow, Group, Post, User
+from .models import Follow, Group, Post, User
 
 
 @cache_page(20)
@@ -41,13 +42,10 @@ def profile(request, username):
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    if request.user.is_authenticated:
-        following = Follow.objects.filter(
-            user=request.user,
-            author=author,
-        )
-    else:
-        following = False
+    following = request.user.is_authenticated and Follow.objects.filter(
+        user=request.user,
+        author=author,
+    ).exists()
     context = {
         'author': author,
         'page_obj': page_obj,
@@ -62,8 +60,8 @@ def post_detail(request, post_id):
     author = post.author
     post_list = author.posts.all()
     post_counter = post_list.count()
-    form = CommentForm(request.POST or None)
-    comments = Comment.objects.filter(post=post).all()
+    form = CommentForm()
+    comments = post.comments.all()
     context = {
         'post': post,
         'author': post.author,
@@ -128,11 +126,11 @@ def follow_index(request):
     for author in following:
         author_list.append(author.author)
     post_list = Post.objects.filter(
-        author__in=author_list).order_by('-pub_date')
+        author__in=author_list, pub_date=F('pub_date'))
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    contex = {'page_obj': page_obj}
+    contex = {'page_obj': page_obj, 'following': following}
     return render(
         request,
         'posts/follow.html',
