@@ -64,7 +64,7 @@ class Comment(models.Model):
         ordering = ('created',)
 
     def __str__(self):
-        return 'Комментарий {} на {}'.format(self.author, self.post)
+        return f'Комментарий {self.author} на {self.post}'
 
 
 class Follow(models.Model):
@@ -77,6 +77,10 @@ class Follow(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='following',
-        null=True,
-        blank=True,
     )
+
+    class Meta:
+        constraints = models.UniqueConstraint(
+            fields=['user', 'author'],
+            name="follow_uniq"
+        )
