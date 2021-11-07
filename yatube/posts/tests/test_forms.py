@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
-from ..models import Group, Post
+from ..models import Group, Post, Comment
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
@@ -88,11 +88,12 @@ class PostFormTests(TestCase):
         self.assertEqual(last_post.id, self.post.id + 1)
         self.assertEqual(form_data['group'], last_post.group.id)
         self.assertEqual(last_post.author, self.post.author)
-        self.assertTrue(
-            Post.objects.filter(
-                image='posts/small.gif'
-            ).exists()
-        )
+        self.assertTrue(  # сделал проверку по аналогии с теорией
+            Post.objects.filter(  # Можно пример, как проверить картинку?
+                image='posts/small.gif'  # Если сравнивать last_post.image
+            ).exists()  # и form_data['image'] - получается разный тип данных:
+        )  # SimpleUploadedFile и ImageField.
+        # Нужно как-то через .decode()?
 
     def test_post_edit_form(self):
         """2 происходит изменение поста post_id в базе данных."""
@@ -118,3 +119,20 @@ class PostFormTests(TestCase):
             id=self.post.id).group.id,
             form_data['group']
         )
+
+    def test_create_comment_form(self):
+        """при отправке валидной формы создается новый комментарий"""
+        form_data = {
+            'text': (f'Комментарий {self.user} на {self.post}')
+        }
+        self.authorized_client.post(reverse(
+            'posts:add_comment',
+            kwargs={'post_id': self.post.id}),
+            form_data
+        )
+        comment_obj = Comment.objects.filter(author=self.user,
+                                             post=self.post.pk).count()
+        self.assertEqual(comment_obj, 1)
+        self.assertEqual(Comment.objects.get(author=self.user,
+                                             post=self.post.pk), form_data['text'])
+

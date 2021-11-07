@@ -8,12 +8,12 @@ from ..models import Follow, Post
 User = get_user_model()
 
 
-class CommentTest(TestCase):
+class FollowTest(TestCase):
 
     def setUp(self):
         self.client_auth = Client()
-        self.user1 = User.objects.create_user(username="sarah")
-        self.user2 = User.objects.create_user(username="james")
+        self.user1 = User.objects.create_user(username='Test_name1')
+        self.user2 = User.objects.create_user(username='Test_name2')
         self.client_auth.force_login(self.user1)
 
         self.client_unauth = Client()

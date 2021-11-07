@@ -142,23 +142,6 @@ class NewPostCaseTest(TestCase):
         ))
         self.assertContains(response, self.post.text)
 
-    def test_new_comment_appears(self):
-        """после успешной отправки комментарий
-        появляется на странице поста"""
-        self.client.post(reverse(
-            'posts:add_comment',
-            kwargs={'post_id': self.post.id}),
-            {'text': self.post.text}
-        )
-        response_get_post_with_comment = self.client.get(
-            reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
-        self.assertIn(self.post.text,
-                      response_get_post_with_comment.content.decode())
-        comment_obj = Comment.objects.filter(author=self.user,
-                                             post=self.post.pk).count()
-        self.assertEqual(comment_obj, 1)
-
-
 class PaginatorViewsTest(TestCase):
     """проверка пагинатора"""
     @classmethod
