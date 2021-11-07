@@ -64,9 +64,6 @@ class Comment(models.Model):
     class Meta:
         ordering = ('created',)
 
-    def __str__(self):
-        return f'Комментарий {self.author} на {self.post}'
-
 
 class Follow(models.Model):
     user = models.ForeignKey(

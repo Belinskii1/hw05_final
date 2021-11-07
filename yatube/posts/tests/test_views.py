@@ -4,7 +4,7 @@ from django.core.cache import cache
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from ..models import Comment, Group, Post
+from ..models import Group, Post
 
 User = get_user_model()
 
@@ -141,6 +141,7 @@ class NewPostCaseTest(TestCase):
             kwargs={'post_id': self.post.id}
         ))
         self.assertContains(response, self.post.text)
+
 
 class PaginatorViewsTest(TestCase):
     """проверка пагинатора"""

@@ -123,7 +123,7 @@ class PostFormTests(TestCase):
     def test_create_comment_form(self):
         """при отправке валидной формы создается новый комментарий"""
         form_data = {
-            'text': (f'Комментарий {self.user} на {self.post}')
+            'text': 'comment text'
         }
         self.authorized_client.post(reverse(
             'posts:add_comment',
@@ -133,6 +133,8 @@ class PostFormTests(TestCase):
         comment_obj = Comment.objects.filter(author=self.user,
                                              post=self.post.pk).count()
         self.assertEqual(comment_obj, 1)
-        self.assertEqual(Comment.objects.get(author=self.user,
-                                             post=self.post.pk), form_data['text'])
-
+        self.assertEqual(Comment.objects.get(
+            author=self.user,
+            post=self.post.pk).text,
+            form_data['text']
+        )
