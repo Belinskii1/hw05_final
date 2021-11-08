@@ -177,3 +177,7 @@ class PaginatorViewsTest(TestCase):
         response = self.client.get(reverse('posts:group_list',
                                            kwargs={'slug': 'test-slug'}))
         self.assertEqual(len(response.context['page_obj']), 10)
+
+#  Олег Гончаров: "А куда делся тест комментария?
+#  Я попросил его переделать, а не удалять".
+#  Перенес в test_forms.py def test_create_comment_form(self)

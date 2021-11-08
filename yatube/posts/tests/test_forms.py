@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
-from ..models import Group, Post, Comment
+from ..models import Comment, Group, Post
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
@@ -88,12 +88,7 @@ class PostFormTests(TestCase):
         self.assertEqual(last_post.id, self.post.id + 1)
         self.assertEqual(form_data['group'], last_post.group.id)
         self.assertEqual(last_post.author, self.post.author)
-        self.assertTrue(  # сделал проверку по аналогии с теорией
-            Post.objects.filter(  # Можно пример, как проверить картинку?
-                image='posts/small.gif'  # Если сравнивать last_post.image
-            ).exists()  # и form_data['image'] - получается разный тип данных:
-        )  # SimpleUploadedFile и ImageField.
-        # Нужно как-то через .decode()?
+        self.assertEqual(last_post.image, 'posts/small.gif')
 
     def test_post_edit_form(self):
         """2 происходит изменение поста post_id в базе данных."""
