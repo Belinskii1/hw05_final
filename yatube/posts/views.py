@@ -121,21 +121,8 @@ def add_comment(request, post_id):
 @login_required
 def follow_index(request):
     following = Follow.objects.filter(user=request.user).all()
-    author_list = []
-    for author in following:
-        author_list.append(author.author)
     post_list = Post.objects.filter(
-        author__in=author_list)
-    #  Не понимаю как это сделать
-    #  Нужно просто ввести второй параметр pub_date c сортировкой по дате?
-    #  Пока искал решение, наткнулся на pandas.
-    #  получилось что-то вроде такой конструкции:
-    #  import datetime as DT
-    #  import pandas as pd
-    #  pub_date = pd.date_range(start=DT.datetime.now(),
-    #  end=DT.date(1800, 10, 10, 10, 10, 10)))
-    #  но уверен, что имелось ввиду что-то более простое и изящное.
-    #  можно еще подсказку?
+        author__following__user=request.user).order_by('-pub_date')
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
